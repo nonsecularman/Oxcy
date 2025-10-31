@@ -1,8 +1,11 @@
 import asyncio
 import importlib
+import os
 from sys import argv
+from threading import Thread
 from pyrogram import idle
 from pytgcalls.exceptions import NoActiveGroupCall
+from flask import Flask
 
 import config
 from BrandrdXMusic import LOGGER, app, userbot
@@ -24,6 +27,7 @@ def run_web_server():
     web_app.run(host='0.0.0.0', port=port)
 # ------------------------------
 
+
 async def init():
     if (
         not config.STRING1
@@ -34,6 +38,13 @@ async def init():
     ):
         LOGGER(__name__).error("Assistant client variables not defined, exiting...")
         exit()
+    
+    # Start the web server in a separate thread
+    LOGGER(__name__).info("Starting UptimeRobot web server...")
+    web_thread = Thread(target=run_web_server)
+    web_thread.daemon = True
+    web_thread.start()
+    
     await sudo()
     try:
         users = await get_gbanned()
