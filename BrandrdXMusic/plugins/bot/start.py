@@ -1,4 +1,4 @@
-import time
+          import time
 import asyncio
 from pyrogram import filters
 from pyrogram.enums import ChatType
@@ -27,12 +27,12 @@ from strings import get_string
 @LanguageStart
 async def start_pm(client, message: Message, _):
     await add_served_user(message.from_user.id)
-    await message.react("♡")
+    await message.react("❤")
     if len(message.text.split()) > 1:
         name = message.text.split(None, 1)[1]
         if name[0:4] == "help":
             keyboard = help_pannel(_)
-            await message.reply_sticker("CAACAgUAAyEFAATAaxXrAAP9aQPAkQABhzpjCoDWA29txJ8D0z27AAJVHgAC0LGoVwy-XYLwjWvgHgQ")
+            await message.reply_sticker("CAACAgUAAyEFAATAaxXrAAIBAAFpA8HsEu7r1Tv7CLg1IiYc-IcjfwACpRoAAhdrqVc8ab1LQLfsaR4E")
             return await message.reply_photo(
                 photo=config.START_IMG_URL,
                 caption=_["help_1"].format(config.SUPPORT_CHAT),
@@ -87,7 +87,7 @@ async def start_pm(client, message: Message, _):
 
         try:
             out = private_panel(_)
-            lol = await message.reply_text("𝐖𝐞𝐥𝐜𝐨𝐦𝐞 𝐁𝐚𝐛𝐲 ♡ {}.. ❣️".format(message.from_user.mention))
+            lol = await message.reply_text("𝐖𝐞𝐥𝐜𝐨𝐦𝐞 𝐁𝐚𝐛𝐲 ♡︎ {}.. ❣️".format(message.from_user.mention))
             await lol.edit_text("𝐖𝐞𝐥𝐜𝐨𝐦𝐞 𝐁𝐚𝐛𝐲 ♡ {}.. 🥳".format(message.from_user.mention))
             await lol.edit_text("𝐖𝐞𝐥𝐜𝐨𝐦𝐞 𝐁𝐚𝐛𝐲 ♡ {}.. 💥".format(message.from_user.mention))
             await lol.edit_text("𝐖𝐞𝐥𝐜𝐨𝐦𝐞 𝐁𝐚𝐛𝐲 ♡ {}.. 🤩".format(message.from_user.mention))
@@ -95,29 +95,29 @@ async def start_pm(client, message: Message, _):
             await lol.edit_text("𝐖𝐞𝐥𝐜𝐨𝐦𝐞 𝐁𝐚𝐛𝐲 ♡ {}.. 💞".format(message.from_user.mention))
                
             await lol.delete()
-            lols = await message.reply_text("**💐ѕ**")
+            lols = await message.reply_text("**💐s**")
             await asyncio.sleep(0.1)
-            await lols.edit_text("**💐ѕт**")        
+            await lols.edit_text("💐sᴛ")        
             await asyncio.sleep(0.1)
-            await lols.edit_text("**💐ѕтα**")
+            await lols.edit_text("**💐sᴛᴀ**")
             await asyncio.sleep(0.1)
-            await lols.edit_text("**💐ѕтαя**")
+            await lols.edit_text("**💐sᴛᴀʀ**")
             await asyncio.sleep(0.1)
-            await lols.edit_text("**💐ѕтαят**")
+            await lols.edit_text("**💐sᴛᴀʀᴛ**")
             await asyncio.sleep(0.1)
-            await lols.edit_text("**💐ѕтαятι**")
+            await lols.edit_text("**💐sᴛᴀʀᴛɪ**")
             await asyncio.sleep(0.1)
-            await lols.edit_text("**💐ѕтαятιи**")
+            await lols.edit_text("**💐sᴛᴀʀᴛɪɴ**")
             await asyncio.sleep(0.1)
-            await lols.edit_text("**💐ѕтαятιиg**")
+            await lols.edit_text("**💐ѕᴛᴀʀᴛɪɴɢ**")
             await asyncio.sleep(0.1)
-            await lols.edit_text("**💐ѕтαятιиg.**")
+            await lols.edit_text("**💐sᴛᴀʀᴛɪɴɢ.**")
 
-            await lols.edit_text("**💐ѕтαятιиg....**")
+            await lols.edit_text("**💐sᴛᴀʀᴛɪɴɢ....**")
 
-            await lols.edit_text("**💐ѕтαятιиg.**")
-            await lols.edit_text("**💐ѕтαятιиg....**")
-            m = await message.reply_sticker("CAACAgUAAyEFAATAaxXrAAIBAAFpA8HsEu7r1Tv7CLg1IiYc-IcjfwACpRoAAhdrqVc8ab1LQLfsaR4E")
+            await lols.edit_text("**💐sᴛᴀʀᴛɪɴɢ.**")
+            await lols.edit_text("**💐sᴛᴀʀᴛɪɴɢ....**")
+            m = await message.reply_sticker("CAACAgUAAyEFAATAaxXrAAP2aQO__RdPMCZ_Fe4NvuSohMTdcUIAAnwXAAKWjJhWjcChETChPlweBA")
             if message.chat.photo:
 
                 userss_photo = await app.download_media(
@@ -199,5 +199,4 @@ async def welcome(client, message: Message):
                 await add_served_chat(message.chat.id)
                 await message.stop_propagation()
         except Exception as ex:
-            print(ex)
-
+            print(ex)                  
