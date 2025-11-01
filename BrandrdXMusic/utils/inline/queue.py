@@ -76,7 +76,7 @@ def aq_markup(_, chat_id):
                 text="ᴏᴡɴᴇʀ", url=f"https://t.me/Coffin_Ka_Bhai_Faded"
             ),
             InlineKeyboardButton(
-                text="ꜱᴜᴘᴘᴏʀᴛ", url=f"https://t.me/YourSexyGc"
+                text="ꜱᴜᴘᴘᴏʀᴛ", url=f"http://TNCmeetup.t.me"
             ),
         ],
         [InlineKeyboardButton(text=_["CLOSE_BUTTON"], callback_data="close")],
@@ -113,7 +113,7 @@ def queuemarkup(_, vidid, chat_id):
         [
             InlineKeyboardButton(
                 text="๏ ᴍᴏʀᴇ ๏",
-                url="https://t.me/dpzworldl",
+                url="http://TechNodeCoders.t.me",
             ),
         ],
     ]
