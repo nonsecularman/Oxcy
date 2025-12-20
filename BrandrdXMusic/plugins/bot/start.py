@@ -40,7 +40,6 @@ async def start_pm(client, message: Message, _):
             sticker_message = await message.reply_sticker(
                 sticker=random.choice(STICKERS)
             )
-            asyncio.create_task(delete_sticker_after_delay(sticker_message, 2))
 
             return await message.reply_photo(
                 photo=config.START_IMG_URL,
@@ -128,7 +127,6 @@ async def start_pm(client, message: Message, _):
         sticker_message = await message.reply_sticker(
             sticker=random.choice(STICKERS)
         )
-        asyncio.create_task(delete_sticker_after_delay(sticker_message, 2))
 
         await message.reply_photo(
             photo=config.START_IMG_URL,
