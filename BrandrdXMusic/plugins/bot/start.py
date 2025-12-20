@@ -101,23 +101,8 @@ async def start_pm(client, message: Message, _):
     sticker_message = await message.reply_sticker(sticker=random.choice(STICKERS))
     asyncio.create_task(delete_sticker_after_delay(sticker_message, 2))
     
-            if message.chat.photo:
-
-                userss_photo = await app.download_media(
-                    message.chat.photo.big_file_id,
-                )
-            else:
-                START_IMG_URL = "assets/nodp.png"
-            if START_IMG_URL:
-                chat_photo = START_IMG_URL
-            chat_photo = START_IMG_URL if START_IMG_URL else START_IMG_URL
-
-        except AttributeError:
-            chat_photo = "assets/nodp.png"
-        await lols.delete()
-        await m.delete()
         await message.reply_photo(
-            photo=chat_photo,
+            photo=config.START_IMG_URL,
             caption=_["start_2"].format(message.from_user.mention, app.mention),
             reply_markup=InlineKeyboardMarkup(out),
         )
