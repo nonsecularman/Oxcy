@@ -25,7 +25,7 @@ DURATION_LIMIT_MIN = int(getenv("DURATION_LIMIT", 999999))
 LOGGER_ID = int(getenv("LOGGER_ID", "-1003530337097"))
 
 # Get this value from @BRANDRD_ROBOT on Telegram by /id
-OWNER_ID = int(getenv("OWNER_ID", "6343891024"))
+OWNER_ID = int(getenv("OWNER_ID", None))
 
 LOG = int(getenv("LOG", True))
 
