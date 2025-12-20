@@ -98,6 +98,13 @@ confirmer = {}
 START_IMG_URL = getenv(
     "START_IMG_URL", "https://telegra.ph/file/4dc854f961cd3ce46899b.jpg"
 )
+
+STICKERS = [
+    "CAACAgQAAyEFAASQEqrdAAIJs2jnyuMgspsf42Mcbh_5BzL_6gNLAAI3DgAC1nJYUMpU4o2QJkYtHgQ",
+    "CAACAgUAAyEFAASQEqrdAAIJr2jnyeFTLUZlJzl1XKVQBSKOPQe6AAKECwACNcE4V12oPuGMNguiHgQ",
+    "CAACAgQAAyEFAASQEqrdAAIJrGjnybC2lswXSzPELCuuut8t9SaFAAKiDgACYl1ZUEhWrJQdUTQ-HgQ",
+]
+
 PING_IMG_URL = getenv(
     "PING_IMG_URL", "https://telegra.ph/file/4dc854f961cd3ce46899b.jpg"
 )
