@@ -105,6 +105,11 @@ STICKERS = [
     "CAACAgQAAyEFAASQEqrdAAIJrGjnybC2lswXSzPELCuuut8t9SaFAAKiDgACYl1ZUEhWrJQdUTQ-HgQ",
 ]
 
+AYU = [
+    "CAACAgUAAyEFAASwkF6wAAIzz2jnx8vHV0DDuGuentmq00DMS59RAALGCAAC0v05V82aflzlC23sHgQ",
+    "CAACAgUAAxkBAAIlv2jnx6f3e7RYjpCC72eI4hGPicHwAAKKCgACa18xV4AnhAOM68fJHgQ"
+]
+
 PING_IMG_URL = getenv(
     "PING_IMG_URL", "https://telegra.ph/file/4dc854f961cd3ce46899b.jpg"
 )
