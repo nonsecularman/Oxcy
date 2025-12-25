@@ -7,86 +7,97 @@ from pyrogram import filters
 
 load_dotenv()
 
-# Get this value from my.telegram.org/apps
-API_ID = int(getenv("API_ID", None))
-API_HASH = getenv("API_HASH", None)
+# ================= HELPERS ================= #
+def get_int(name, default=0):
+    try:
+        return int(getenv(name, default))
+    except (TypeError, ValueError):
+        return default
 
-# Get your token from @BotFather on Telegram.
-BOT_TOKEN = getenv("BOT_TOKEN", None)
+def get_bool(name, default=False):
+    return str(getenv(name, default)).lower() in ("true", "1", "yes", "on")
 
-# Get your mongo url from cloud.mongodb.com
-MONGO_DB_URI = getenv("MONGO_DB_URI", None)
-MUSIC_BOT_NAME = getenv("MUSIC_BOT_NAME", None)
-PRIVATE_BOT_MODE = getenv("PRIVATE_BOT_MODE", None)
+# ================= REQUIRED ================= #
+API_ID = get_int("API_ID")
+API_HASH = getenv("API_HASH", "")
+BOT_TOKEN = getenv("BOT_TOKEN", "")
 
-DURATION_LIMIT_MIN = int(getenv("DURATION_LIMIT", 999999))
+if not API_ID or not API_HASH or not BOT_TOKEN:
+    raise SystemExit("[ERROR] API_ID / API_HASH / BOT_TOKEN missing")
 
-# Chat id of a group for logging bot's activities
-LOGGER_ID = int(getenv("LOGGER_ID", "-1003530337097"))
+# ================= OWNER / LOG ================= #
+OWNER_ID = get_int("OWNER_ID")
+LOGGER_ID = get_int("LOGGER_ID", -1003530337097)
+LOG = get_bool("LOG", True)
 
-# Get this value from @BRANDRD_ROBOT on Telegram by /id
-OWNER_ID = int(getenv("OWNER_ID", None))
+# ================= DATABASE ================= #
+MONGO_DB_URI = getenv("MONGO_DB_URI", "")
 
-LOG = int(getenv("LOG", True))
+# ================= BOT SETTINGS ================= #
+MUSIC_BOT_NAME = getenv("MUSIC_BOT_NAME", "MusicBot")
+PRIVATE_BOT_MODE = get_bool("PRIVATE_BOT_MODE", False)
 
-## Fill these variables if you're deploying on heroku.
-# Your heroku app name
+DURATION_LIMIT_MIN = get_int("DURATION_LIMIT", 999999)
+
+# ================= HEROKU ================= #
 HEROKU_APP_NAME = getenv("HEROKU_APP_NAME")
-# Get it from http://dashboard.heroku.com/account
 HEROKU_API_KEY = getenv("HEROKU_API_KEY")
 
-API_URL = getenv("API_URL", 'https://api.thequickearn.xyz')
-VIDEO_API_URL = getenv("VIDEO_API_URL", 'https://api.video.thequickearn.xyz')
-API_KEY = getenv("API_KEY", '30DxNexGenBotsfcfad8')
- 
+# ================= API ================= #
+API_URL = getenv("API_URL", "https://api.thequickearn.xyz")
+VIDEO_API_URL = getenv("VIDEO_API_URL", "https://api.video.thequickearn.xyz")
+API_KEY = getenv("API_KEY", "30DxNexGenBotsfcfad8")
 
+# ================= GIT ================= #
 UPSTREAM_REPO = getenv(
     "UPSTREAM_REPO",
-    "https://github.com/krishbharti3404-source/Oxcy",
+    "https://github.com/krishbharti3404-source/Oxcy"
 )
 UPSTREAM_BRANCH = getenv("UPSTREAM_BRANCH", "main")
-GIT_TOKEN = getenv(
-    "GIT_TOKEN", None
-)  # Fill this variable if your upstream repository is private
+GIT_TOKEN = getenv("GIT_TOKEN")
 
+# ================= SUPPORT ================= #
 SUPPORT_CHANNEL = getenv("SUPPORT_CHANNEL", "https://t.me/veron_bots")
 SUPPORT_CHAT = getenv("SUPPORT_CHAT", "https://t.me/adult_town")
 
-# Set this to True if you want the assistant to automatically leave chats after an interval
-AUTO_LEAVING_ASSISTANT = bool(getenv("AUTO_LEAVING_ASSISTANT", False))
-
-# Auto Gcast/Broadcast Handler (True = broadcast on , False = broadcast off During Hosting, Dont Do anything here.)
-AUTO_GCAST = os.getenv("AUTO_GCAST")
-
-# Auto Broadcast Message That You Want Use In Auto Broadcast In All Groups.
+# ================= AUTO FEATURES ================= #
+AUTO_LEAVING_ASSISTANT = get_bool("AUTO_LEAVING_ASSISTANT", False)
+AUTO_GCAST = get_bool("AUTO_GCAST", False)
 AUTO_GCAST_MSG = getenv("AUTO_GCAST_MSG", "")
 
-# Get this credentials from https://developer.spotify.com/dashboard
-SPOTIFY_CLIENT_ID = getenv("SPOTIFY_CLIENT_ID", "bcfe26b0ebc3428882a0b5fb3e872473")
-SPOTIFY_CLIENT_SECRET = getenv("SPOTIFY_CLIENT_SECRET", "907c6a054c214005aeae1fd752273cc4")
+# ================= SPOTIFY ================= #
+SPOTIFY_CLIENT_ID = getenv(
+    "SPOTIFY_CLIENT_ID",
+    "bcfe26b0ebc3428882a0b5fb3e872473"
+)
+SPOTIFY_CLIENT_SECRET = getenv(
+    "SPOTIFY_CLIENT_SECRET",
+    "907c6a054c214005aeae1fd752273cc4"
+)
 
+# ================= LIMITS ================= #
+SERVER_PLAYLIST_LIMIT = get_int("SERVER_PLAYLIST_LIMIT", 999)
+PLAYLIST_FETCH_LIMIT = get_int("PLAYLIST_FETCH_LIMIT", 999)
 
-# Maximum limit for fetching playlist's track from youtube, spotify, apple links.
-SERVER_PLAYLIST_LIMIT = int(getenv("SERVER_PLAYLIST_LIMIT", "999"))
-PLAYLIST_FETCH_LIMIT = int(getenv("PLAYLIST_FETCH_LIMIT", "999"))
+SONG_DOWNLOAD_DURATION_LIMIT = get_int(
+    "SONG_DOWNLOAD_DURATION_LIMIT", 999999
+)
 
-SONG_DOWNLOAD_DURATION = int(getenv("SONG_DOWNLOAD_DURATION_LIMIT", "999"))
-SONG_DOWNLOAD_DURATION_LIMIT = int(getenv("SONG_DOWNLOAD_DURATION_LIMIT", "999999"))
+TG_AUDIO_FILESIZE_LIMIT = get_int(
+    "TG_AUDIO_FILESIZE_LIMIT", 104857600
+)
+TG_VIDEO_FILESIZE_LIMIT = get_int(
+    "TG_VIDEO_FILESIZE_LIMIT", 1073741824
+)
 
-# Telegram audio and video file size limit (in bytes)
-TG_AUDIO_FILESIZE_LIMIT = int(getenv("TG_AUDIO_FILESIZE_LIMIT", 104857600))
-TG_VIDEO_FILESIZE_LIMIT = int(getenv("TG_VIDEO_FILESIZE_LIMIT", 1073741824))
-# Checkout https://www.gbmb.org/mb-to-bytes for converting mb to bytes
+# ================= STRING SESSIONS ================= #
+STRING1 = getenv("STRING_SESSION")
+STRING2 = getenv("STRING_SESSION2")
+STRING3 = getenv("STRING_SESSION3")
+STRING4 = getenv("STRING_SESSION4")
+STRING5 = getenv("STRING_SESSION5")
 
-
-# Get your pyrogram v2 session from @BRANDEDSTRINGSESSION_BOT on Telegram
-STRING1 = getenv("STRING_SESSION",  None)
-STRING2 = getenv("STRING_SESSION2", None)
-STRING3 = getenv("STRING_SESSION3", None)
-STRING4 = getenv("STRING_SESSION4", None)
-STRING5 = getenv("STRING_SESSION5", None)
-
-
+# ================= RUNTIME DATA ================= #
 BANNED_USERS = filters.user()
 adminlist = {}
 lyrical = {}
@@ -94,53 +105,43 @@ votemode = {}
 autoclean = []
 confirmer = {}
 
-
+# ================= IMAGES ================= #
 START_IMG_URL = getenv(
-    "START_IMG_URL", "https://telegra.ph/file/4dc854f961cd3ce46899b.jpg"
+    "START_IMG_URL",
+    "https://telegra.ph/file/4dc854f961cd3ce46899b.jpg"
 )
-
-STICKERS = [
-    "CAACAgQAAyEFAASQEqrdAAIJs2jnyuMgspsf42Mcbh_5BzL_6gNLAAI3DgAC1nJYUMpU4o2QJkYtHgQ",
-    "CAACAgUAAyEFAASQEqrdAAIJr2jnyeFTLUZlJzl1XKVQBSKOPQe6AAKECwACNcE4V12oPuGMNguiHgQ",
-    "CAACAgQAAyEFAASQEqrdAAIJrGjnybC2lswXSzPELCuuut8t9SaFAAKiDgACYl1ZUEhWrJQdUTQ-HgQ",
-]
-
-AYU = [
-    "CAACAgUAAyEFAASwkF6wAAIzz2jnx8vHV0DDuGuentmq00DMS59RAALGCAAC0v05V82aflzlC23sHgQ",
-    "CAACAgUAAxkBAAIlv2jnx6f3e7RYjpCC72eI4hGPicHwAAKKCgACa18xV4AnhAOM68fJHgQ"
-]
 
 PING_IMG_URL = getenv(
-    "PING_IMG_URL", "https://telegra.ph/file/4dc854f961cd3ce46899b.jpg"
+    "PING_IMG_URL",
+    "https://telegra.ph/file/4dc854f961cd3ce46899b.jpg"
 )
+
 PLAYLIST_IMG_URL = "https://files.catbox.moe/owu6ir.jpg"
-STATS_IMG_URL = "https://telegra.ph/file/4dc854f961cd3ce46899b.jpg"
-TELEGRAM_AUDIO_URL = "https://telegra.ph/file/4dc854f961cd3ce46899b.jpg"
-TELEGRAM_VIDEO_URL = "https://telegra.ph/file/4dc854f961cd3ce46899b.jpg"
-STREAM_IMG_URL = "https://files.catbox.moe/owu6ir.jpg"
-SOUNCLOUD_IMG_URL = "https://telegra.ph/file/4dc854f961cd3ce46899b.jpg"
-YOUTUBE_IMG_URL = "https://files.catbox.moe/owu6ir.jpg"
-SPOTIFY_ARTIST_IMG_URL = "https://telegra.ph/file/4dc854f961cd3ce46899b.jpg"
-SPOTIFY_ALBUM_IMG_URL = "https://telegra.ph/file/4dc854f961cd3ce46899b.jpg"
-SPOTIFY_PLAYLIST_IMG_URL = "https://telegra.ph/file/4dc854f961cd3ce46899b.jpg"
+STATS_IMG_URL = START_IMG_URL
+TELEGRAM_AUDIO_URL = START_IMG_URL
+TELEGRAM_VIDEO_URL = START_IMG_URL
+STREAM_IMG_URL = PLAYLIST_IMG_URL
+SOUNCLOUD_IMG_URL = START_IMG_URL
+YOUTUBE_IMG_URL = PLAYLIST_IMG_URL
+SPOTIFY_ARTIST_IMG_URL = START_IMG_URL
+SPOTIFY_ALBUM_IMG_URL = START_IMG_URL
+SPOTIFY_PLAYLIST_IMG_URL = START_IMG_URL
 
-
+# ================= UTIL ================= #
 def time_to_seconds(time):
-    stringt = str(time)
-    return sum(int(x) * 60**i for i, x in enumerate(reversed(stringt.split(":"))))
+    return sum(
+        int(x) * 60 ** i
+        for i, x in enumerate(reversed(str(time).split(":")))
+    )
 
+DURATION_LIMIT = time_to_seconds(f"{DURATION_LIMIT_MIN}:00")
 
-DURATION_LIMIT = int(time_to_seconds(f"{DURATION_LIMIT_MIN}:00"))
-
-
-if SUPPORT_CHANNEL:
-    if not re.match("(?:http|https)://", SUPPORT_CHANNEL):
+# ================= URL CHECK ================= #
+for url, name in [
+    (SUPPORT_CHANNEL, "SUPPORT_CHANNEL"),
+    (SUPPORT_CHAT, "SUPPORT_CHAT"),
+]:
+    if url and not re.match(r"^https?://", url):
         raise SystemExit(
-            "[ERROR] - Your SUPPORT_CHANNEL url is wrong. Please ensure that it starts with https://"
-        )
-
-if SUPPORT_CHAT:
-    if not re.match("(?:http|https)://", SUPPORT_CHAT):
-        raise SystemExit(
-            "[ERROR] - Your SUPPORT_CHAT url is wrong. Please ensure that it starts with https://"
-        )
+            f"[ERROR] {name} must start with https://"
+)
