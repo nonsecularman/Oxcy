@@ -5,8 +5,14 @@ import random
 import aiofiles
 import aiohttp
 
-from PIL import Image, ImageDraw, ImageEnhance
-from PIL import ImageFilter, ImageFont, ImageOps
+from PIL import (
+    Image,
+    ImageDraw,
+    ImageEnhance,
+    ImageFilter,
+    ImageFont,
+    ImageOps,
+)
 
 from unidecode import unidecode
 from py_yt import VideosSearch
@@ -15,122 +21,82 @@ from BrandrdXMusic import app
 from config import YOUTUBE_IMG_URL
 
 
+# ================== Utils ==================
+
 def changeImageSize(maxWidth, maxHeight, image):
-    widthRatio = maxWidth / image.size[0]
-    heightRatio = maxHeight / image.size[1]
-    newWidth = int(widthRatio * image.size[0])
-    newHeight = int(heightRatio * image.size[1])
-    newImage = image.resize((newWidth, newHeight))
-    return newImage
+    ratio = min(maxWidth / image.size[0], maxHeight / image.size[1])
+    new_size = (int(image.size[0] * ratio), int(image.size[1] * ratio))
+    return image.resize(new_size, Image.LANCZOS)
 
 
-def clear(text):
-    list = text.split(" ")
-    title = ""
-    for i in list:
-        if len(title) + len(i) < 60:
-            title += " " + i
-    return title.strip()
+def clear(text, limit=60):
+    words = text.split()
+    out = ""
+    for w in words:
+        if len(out) + len(w) <= limit:
+            out += " " + w
+    return out.strip()
 
+
+# ================== Main ==================
 
 async def get_thumb(videoid):
-    if os.path.isfile(f"cache/{videoid}.png"):
-        return f"cache/{videoid}.png"
+    cache_file = f"cache/{videoid}.png"
+    temp_file = f"cache/temp_{videoid}.png"
 
-    url = f"https://www.youtube.com/watch?v={videoid}"
+    if os.path.isfile(cache_file):
+        return cache_file
+
     try:
-        results = VideosSearch(url, limit=1)
-        for result in (await results.next())["result"]:
-            try:
-                title = result["title"]
-                title = re.sub("\W+", " ", title)
-                title = title.title()
-            except:
-                title = "Unsupported Title"
-            try:
-                duration = result["duration"]
-            except:
-                duration = "Unknown Mins"
-            thumbnail = result["thumbnails"][0]["url"].split("?")[0]
-            try:
-                views = result["viewCount"]["short"]
-            except:
-                views = "Unknown Views"
-            try:
-                channel = result["channel"]["name"]
-            except:
-                channel = "Unknown Channel"
+        search = VideosSearch(f"https://www.youtube.com/watch?v={videoid}", limit=1)
+        data = (await search.next())["result"][0]
 
+        title = clear(re.sub(r"\W+", " ", data.get("title", "Unsupported Title")).title())
+        duration = data.get("duration", "Unknown")
+        views = data.get("viewCount", {}).get("short", "Unknown Views")
+        channel = data.get("channel", {}).get("name", "Unknown Channel")
+        thumb_url = data["thumbnails"][0]["url"].split("?")[0]
+
+        # Download thumbnail
         async with aiohttp.ClientSession() as session:
-            async with session.get(thumbnail) as resp:
-                if resp.status == 200:
-                    f = await aiofiles.open(f"cache/thumb{videoid}.png", mode="wb")
+            async with session.get(thumb_url) as resp:
+                if resp.status != 200:
+                    return YOUTUBE_IMG_URL
+                async with aiofiles.open(temp_file, "wb") as f:
                     await f.write(await resp.read())
-                    await f.close()
 
-        
-        colors = ["white", "red", "orange", "yellow", "green", "cyan", "azure", "blue", "violet", "magenta", "pink"]
-        border = random.choice(colors)
-        youtube = Image.open(f"cache/thumb{videoid}.png")
-        image1 = changeImageSize(1280, 720, youtube)
-        bg_bright = ImageEnhance.Brightness(image1)
-        bg_logo = bg_bright.enhance(1.1)
-        bg_contra = ImageEnhance.Contrast(bg_logo)
-        bg_logo = bg_contra.enhance(1.1)
-        logox = ImageOps.expand(bg_logo, border=7, fill=f"{border}")
-        background = changeImageSize(1280, 720, logox)
-         image2 = image1.convert("RGBA")
-         background = image2.filter(filter=ImageFilter.BoxBlur(1))
-        enhancer = ImageEnhance.Brightness(background)
-        background = enhancer.enhance(0.9)
+        # Open image
+        youtube = Image.open(temp_file).convert("RGB")
+        image = changeImageSize(1280, 720, youtube)
+
+        # Blur background
+        background = image.filter(ImageFilter.GaussianBlur(8))
+        background = ImageEnhance.Brightness(background).enhance(0.85)
+        background = ImageEnhance.Contrast(background).enhance(1.2)
+
+        # Neon border
+        colors = ["cyan", "magenta", "blue", "red", "green", "yellow"]
+        background = ImageOps.expand(background, border=6, fill=random.choice(colors))
+        background = changeImageSize(1280, 720, background)
+
         draw = ImageDraw.Draw(background)
-        arial = ImageFont.truetype("BrandrdXMusic/assets/font2.ttf", 30)
-        font = ImageFont.truetype("BrandrdXMusic/assets/font.ttf", 30)
-         draw.text((1110, 8), unidecode(app.name), fill="white", font=arial)
-        """
-        draw.text(
-            (1, 1),
-            f"{channel} | {views[:23]}",
-            (1, 1, 1),
-            font=arial,
-        )
-        draw.text(
-            (1, 1),
-            clear(title),
-            (1, 1, 1),
-            font=font,
-        )
-        draw.line(
-            [(1, 1), (1, 1)],
-            fill="white",
-            width=1,
-            joint="curve",
-        )
-        draw.ellipse(
-            [(1, 1), (2, 1)],
-            outline="white",
-            fill="white",
-            width=1,
-        )
-        draw.text(
-            (1, 1),
-            "00:00",
-            (1, 1, 1),
-            font=arial,
-        )
-        draw.text(
-            (1, 1),
-            f"{duration[:23]}",
-            (1, 1, 1),
-            font=arial,
-        )
-        """
-        try:
-            os.remove(f"cache/thumb{videoid}.png")
-        except:
-            pass
-        background.save(f"cache/{videoid}.png")
-        return f"cache/{videoid}.png"
+
+        # Fonts
+        font_title = ImageFont.truetype("BrandrdXMusic/assets/font.ttf", 42)
+        font_small = ImageFont.truetype("BrandrdXMusic/assets/font2.ttf", 28)
+
+        # Text
+        draw.text((30, 30), title, fill="white", font=font_title)
+        draw.text((30, 90), f"{channel} • {views}", fill="white", font=font_small)
+        draw.text((1100, 20), unidecode(app.name), fill="white", font=font_small)
+        draw.text((30, 650), duration, fill="white", font=font_small)
+
+        # Save
+        os.remove(temp_file)
+        background.save(cache_file, "PNG")
+
+        return cache_file
+
     except Exception as e:
-        print(e)
+        print(f"[THUMB ERROR] {e}")
         return YOUTUBE_IMG_URL
