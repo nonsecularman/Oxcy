@@ -32,7 +32,7 @@ async def send_instagram_media(message: Message, url: str):
         extension = data.get("extension", "Unknown")
         size = data.get("formattedSize", "Unknown")
         caption = (
-            f"Dᴏᴡɴʟᴏᴀᴅᴇᴅ Bʏ : @OxcyBot\nPᴏᴡᴇʀᴇᴅ Bʏ : @Veron_Bots"
+            f"Dᴏᴡɴʟᴏᴀᴅᴇᴅ Bʏ : @kryshmusicbot\nPᴏᴡᴇʀᴇᴅ Bʏ : @iscamz"
         )
         await processing_msg.delete()
         await message.reply_video(video_url, caption=caption)
